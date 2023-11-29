@@ -1,5 +1,5 @@
 ---
-title: "Projectdata"
+title: "Project: Group 3"
 author: "EL Ghali DEBBAGH and Victoria SEMINA Project"
 format: html
 editor: visual
@@ -15,14 +15,14 @@ library(tidyr)
 library(ggplot2)
 ```
 
-## Datacleaning
+## Data Cleaning
 
 ```{r}
 FAO <- vroom("FAO.csv")
 ```
 
 ```{r}
-#We fist had a problem in the FAO databse where some years in column 'Year' were witten as and interval example 2014 was written as 2013-2015 ...
+#First of all, we had a problem with the FAO database because some years in column 'Year' were written as an interval, e.g. 2014 was written as 2013-2015. This problem actually comes from the original FAO website's database description, where years are written as following 2022/2021-2023. So first of all we figured out this issue.
 
 
 FAO$Year <- ifelse(grepl("\\d{4}-(\\d{4})", FAO$Year), sub("(\\d{4})-(\\d{4})", "\\1", FAO$Year) %>% as.numeric() + 1, FAO$Year)
@@ -30,7 +30,7 @@ FAO$Year <- ifelse(grepl("\\d{4}-(\\d{4})", FAO$Year), sub("(\\d{4})-(\\d{4})", 
 ```
 
 ```{r}
-# Here we just delete the 'Year code column' since we already have a column year
+# Then we had a need to delete the 'Year code column' since we already have a column year
 FAO_test<-
 FAO |> select(-`Year Code`)
 
@@ -38,7 +38,7 @@ FAO |> select(-`Year Code`)
 ```
 
 ```{r}
-#Here we use pivot wider to put our indicators in columns to get our 'final' first table
+#After that, we use 'pivot wider' to put our indicators in columns to get our cleaned first table
 
 FAO_widetest<- FAO_test |> pivot_wider(names_from = Item, values_from = Value, id_cols =c('Year', 'Area'))
 ```
@@ -48,26 +48,26 @@ FAO_widetest<- FAO_test |> pivot_wider(names_from = Item, values_from = Value, i
 WB<- vroom("WB.csv")
 
 ```
-#In this table the initial problem was having years in columns instead of lines, so first we used pivot longer to make years in lines 
+#Now we are looking at the table from the World Bank. The initial problem there was the fact that years were written in columns instead of lines. That's why we decided to use 'pivot longer' to put years in lines (to combine after with the first table)
 WB_longtest<-WB|>pivot_longer(!(`Country Name` | `Country Code` |`Series Name` |`Series Code`))
 
 ```
 ```{r}
-#Here we just recall the new column or years 'Year'
+#Here we need to name the new column with years as 'Year'
 WB_longtest <- WB_longtest |> rename("Year"="name")
 ```
 
 ```{r}
-# In the world bank database some missing values were automaticly replaced by ".." so we replace them with NA
+# In the World Bank database some missing values were automatically replaced by ".." In order not to get any problems with working with tables we replace such missed values with NA
 WB_longtest[WB_longtest==".."]<- NA
 ```
 
 ```{r}
-# Here we had a problem with year columns where years were written 2014[YR2014] ... so we wanted to get only the year and delete the [YR2014] for every year 
+# After cleaning this, we faced with the another problem with  year columns where years were written as 2014[YR2014]. However, we need to have only the year insteasm so we deleted these brackets for every year 
 WB_longtest$Year <- gsub("\\[.*\\]", "", WB_longtest$Year)
 ```
 ```{r}
-#Here is the final version of the second second table we use pivot wiedr to make indicators in columns 
+#After that, we use 'pivot wider' to put our indicators in columns to get our cleaned second table
 WB_wide <- WB_longtest |>
   pivot_wider(
     names_from = `Series Name`,
@@ -78,7 +78,7 @@ WB_wide <- WB_longtest |>
 
 ```
 ```{r}
-#Summary of fist table
+#Summary of the first table
 num_rows <- nrow(FAO_widetest)
 num_cols <- ncol(FAO_widetest)
 
@@ -95,7 +95,7 @@ knitr::kable(summary_table)
 ```
 
 ```{r}
-#Summary of second table
+#Summary of the second table
 
 num_rows_wide <- nrow(WB_wide)
 num_cols_wide <- ncol(WB_wide)
