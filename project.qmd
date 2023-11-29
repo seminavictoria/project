@@ -38,11 +38,17 @@ FAO |> select(-`Year Code`)
 ```
 
 ```{r}
+#Here we use pivot wider to put our indicators in columns to get our 'final' first table
+
 FAO_widetest<- FAO_test |> pivot_wider(names_from = Item, values_from = Value, id_cols =c('Year', 'Area'))
 ```
 
 ```{r}
 
 WB<- vroom("WB.csv")
-```
 
+```
+#In this table the initial problem was having years in columns instead of lines, so first we used pivot longer to make years in lines 
+WB_longtest<-WB|>pivot_longer(!(`Country Name` | `Country Code` |`Series Name` |`Series Code`))
+
+```
