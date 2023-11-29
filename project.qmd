@@ -112,3 +112,18 @@ summary_table_wide <- data.frame(
 knitr::kable(summary_table_wide)
 
 ```
+
+The research question of our project: How do various development indicators, such as national income, investment, and education, interact with and influence the levels of food (in)security within a nation?
+
+It seemed to us that it would be relevant to study the relationship between food security and various indicators of the country’s development, since this directly affects the overall well-being of the country and the quality of life in it. In addition, we look at both developed and developing countries, which will allow us to identify patterns of inequality. Analyzing the relationships between food security and development outcomes can also highlight inequalities in access to resources and opportunities.
+
+It seemed to us that, in general, the study of food security and its links with various development indicators is important for the scientific community and for our own development, in order to potentially understand how to build a more sustainable, prosperous and international society.
+
+As part of the analysis, we expect that a certain relationship will be found between national income and food security. Specifically, that high national income can be associated with increased access to quality and varied food. However, despite this, food security problems such as malnutrition due to social inequalities may also exist in developed countries.
+
+In addition, we are going to analyze the relationship between education and food security. We expect that higher levels of education will generally be associated with higher levels of healthy eating awareness and resource management skills, which will help improve food security.
+
+We also want to analyze developed and developing countries because we expect different results in these groups. It seems to us that in developed countries the main problems will be related to the social aspects of food security, such as inequality in access to resources. In particular, anorexia and obesity may be problems of overconsumption and pressure from social standards of beauty, while in developing countries, conversely, low levels of education and limited investment may lead to malnutrition and lack of access to key food resources.
+
+Overall, through the analysis of the relationships between food security and various development indicators, we want to identify the main dynamics that shape the level of food security in different countries.
+
