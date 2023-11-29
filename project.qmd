@@ -77,3 +77,19 @@ WB_wide <- WB_longtest |>
   )
 
 ```
+```{r}
+#Summary of fist table
+num_rows <- nrow(FAO_widetest)
+num_cols <- ncol(FAO_widetest)
+
+missing_values <- colSums(is.na(FAO_widetest))
+
+summary_table <- data.frame(
+  Number_of_rows = num_rows,
+  Number_of_columns = num_cols,
+  Number_of_missing_values = missing_values
+)
+
+
+knitr::kable(summary_table)
+```
