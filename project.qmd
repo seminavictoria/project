@@ -17,6 +17,14 @@ library(ggplot2)
 
 ## Data Cleaning
 
+Source description : 
+
+The first data source is FAO (Food and Agriculture Organisation of the United Nations): https://www.fao.org/faostat/en/#data/FS  the data selected is from « Suite of Food Security Indicators » ; steps to get the final table are; select in countries: « select all », in elements select « values », in items select  « prevalence of undernourishment (percent) », « Prevalence of severe food insecurity in the total population (percent) », « Percentage of children under 5 years affected by wasting (percent) » , « Percentage of children under 5 years of age who are stunted (modelled estimates) (percent) », « Percentage of children under 5 years of age who are overweight (modelled estimates) (percent) », « Prevalence of obesity in the adult population (18 years and older) », « Prevalence of anemia among women of reproductive age (15-49 years) », « Prevalence of low birthweight (percent) » , »Prevalence of exclusive breastfeeding among infants 0-5 months of age », for the selected years , we choose to work from 2013 to 2022.
+
+Description from the FAO website:
+
+« The new suite of food security indicators is composed of a revised selection of indicators based on the SDGs monitoring requirement and data availability. For example, some of the utilization indicators are replaced with official SDGs indicators. Data in this domain are featured in the State of Food Security and Nutrition in the World 2022 report. »
+
 ```{r}
 FAO <- vroom("FAO.csv")
 ```
@@ -42,6 +50,15 @@ FAO |> select(-`Year Code`)
 
 FAO_widetest<- FAO_test |> pivot_wider(names_from = Item, values_from = Value, id_cols =c('Year', 'Area'))
 ```
+The second data source is The World Bank ,https://databank.worldbank.org/source/world-development-indicators#,  to get our final table, we select in database « World Development Indicators », for Countries, we selected all countries from Afghanistan to Zimbabwe, in series we select ; « GDP growth (annual %) » , « GDP per capita growth (annual %) » , « Agricultural land (% of land area », « Children in employment, female (% of female children ages 7-14) » Children in employment, female (% of female children ages 7-14) », « Children in employment, male (% of male children ages 7-14) », « Children out of school (% of primary school age) », « Children out of school, female (% of female primary school age) », « « Children out of school, male (% of male primary school age) », « Death rate, crude (per 1,000 people) », « Current education expenditure, total (% of total expenditure in public institutions) », « Current health expenditure (% of GDP) »
+
+«  Food production index (2014-2016 = 100) » ,« Gini index » ,«  Labor force participation rate, female (% of female population ages 15+ (modeled ILO estimate) », «  Labor force, female (% of total labor force) », «  Life expectancy at birth, total (years) », «  Lifetime risk of maternal death (%) », « Number of infant deaths ».
+
+Description from The World Bank website:
+
+« World Development Indicators (WDI) is the primary World Bank collection of development indicators, compiled from officially recognized international sources. It presents the most current and accurate global development data available, and includes national, regional and global estimates. [Note: Even though Global Development Finance (GDF) is no longer listed in the WDI database name, all external debt and financial flows data continue to be included in WDI. The GDF publication has been renamed International Debt Statistics (IDS), and has its own separate database, as well. » 
+
+Les indicateurs choisis semblent assez évident; ceux du premier tableau concernent principalement les pourcentages de personnes atteintes de maladies, tel que, l'anémie, l'obésité, le faible poids à la naissance, pour le second tableau les indicateurs sont aussi communs que les premiers; il s'agit des indicateurs de bases du développement (PIB et PIB/hab …) ainsi que des indicateurs sur l'éducation, notamment l'éducation de la femme, puis des indicateurs sur les ressources et l'agriculture allant à des indicateurs d'inégalités comme l'indice de Gini.
 
 ```{r}
 
