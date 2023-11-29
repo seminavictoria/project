@@ -93,3 +93,22 @@ summary_table <- data.frame(
 
 knitr::kable(summary_table)
 ```
+
+```{r}
+#Summary of second table
+
+num_rows_wide <- nrow(WB_wide)
+num_cols_wide <- ncol(WB_wide)
+
+missing_values_wide <- colSums(is.na(WB_wide))
+
+
+summary_table_wide <- data.frame(
+  Number_of_rows = num_rows_wide,
+ Number_of_columns = num_cols_wide,
+  Number_of_missing_values = missing_values_wide
+)
+
+knitr::kable(summary_table_wide)
+
+```
