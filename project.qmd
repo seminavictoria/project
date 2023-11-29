@@ -1,12 +1,11 @@
 ---
-title: "Projectdata"
+title: "Project Data: Group 3"
 author: "EL Ghali DEBBAGH and Victoria SEMINA Project"
 format: html
 editor: visual
 ---
 
 ```{r}
-#| message: false
 here::i_am("testdatabase.Rproj")
 library(here)
 library(vroom)
@@ -15,7 +14,7 @@ library(tidyr)
 library(ggplot2)
 ```
 
-## Datacleaning
+## Data Cleaning
 
 ```{r}
 FAO <- vroom("FAO.csv")
@@ -24,10 +23,17 @@ FAO <- vroom("FAO.csv")
 ```{r}
 #We fist had a problem in the FAO databse where some years in column 'Year' were witten as and interval example 2014 was written as 2013-2015 ...
 
-
 FAO$Year <- ifelse(grepl("\\d{4}-(\\d{4})", FAO$Year), sub("(\\d{4})-(\\d{4})", "\\1", FAO$Year) %>% as.numeric() + 1, FAO$Year)
 
 ```
 
-```{}
+```{r}
+# Supprimer la colonne 'Year Code' de votre dataframe FAO
+FAO_test<-
+  FAO %>% select(-`Year Code`)
 ```
+
+```{r}
+FAO_widetest<- FAO_test %>% pivot_wider(names_from = Item, values_from = Value, id_cols =c('Year', 'Area'))
+```
+
