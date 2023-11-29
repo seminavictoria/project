@@ -36,3 +36,13 @@ FAO |> select(-`Year Code`)
 
 
 ```
+
+```{r}
+FAO_widetest<- FAO_test |> pivot_wider(names_from = Item, values_from = Value, id_cols =c('Year', 'Area'))
+```
+
+```{r}
+
+WB<- vroom("WB.csv")
+```
+
