@@ -66,3 +66,14 @@ WB_longtest[WB_longtest==".."]<- NA
 # Here we had a problem with year columns where years were written 2014[YR2014] ... so we wanted to get only the year and delete the [YR2014] for every year 
 WB_longtest$Year <- gsub("\\[.*\\]", "", WB_longtest$Year)
 ```
+```{r}
+#Here is the final version of the second second table we use pivot wiedr to make indicators in columns 
+WB_wide <- WB_longtest |>
+  pivot_wider(
+    names_from = `Series Name`,
+    values_from = value,
+    id_cols = c('Year', 'Country Name'),
+    values_fn = list
+  )
+
+```
