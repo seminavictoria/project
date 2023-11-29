@@ -29,5 +29,10 @@ FAO$Year <- ifelse(grepl("\\d{4}-(\\d{4})", FAO$Year), sub("(\\d{4})-(\\d{4})", 
 
 ```
 
-```{}
+```{r}
+# Here we just delete the 'Year code column' since we already have a column year
+FAO_test<-
+FAO |> select(-`Year Code`)
+
+
 ```
