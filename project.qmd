@@ -452,3 +452,49 @@ Poor countries often produce goods for export and starve themselves, while north
 
 In addition, the Food Production Index is a fairly complex variable and often includes specific food products, but does not, for example, include the production of fresh water or other essential nutrients.
 
+## Pushing the analysis
+
+Previous analysis didn't show us any clear tendency on how the economic level influences food insecurity.
+
+So, before analyzing socio-economic indicators, such as education and woman role in the society, we decided to try to push a little more our analysis.
+
+First of all, we provided a table with 5 richest and 5 poorest countries in year 2013 by PIB level (source FMI) and focus on specific indicator which is "Prevalence of anemia among women of reproductive age (15-49 years)" to try to figure out if any influence of the GDP level (not the growth, because, as know, GDP grows faster in developping countries rather than developped) on this indicator.
+
+The five richest countries according to PIB level in 2013 are: USA, China, Japan, Germany, France. The five poorest countries in 2013 according to same source and on the same criteria are Syria, Tuvalu, Nauru, Kiribati and Marshall islands.
+
+```{r}
+selected_countries <- c("United States", "China", "Japan", "Germany", "France", "Syrian Arab Republic", "Tuvalu", "Nauru", "Kiribati", "Marshall Islands")
+
+data_countries_PIB <- data[data$Area %in% selected_countries, ]
+
+
+
+```
+
+```{r}
+#| warning: false
+
+
+
+graphPIB <- ggplot(data_countries_PIB, aes(x = Year, y = `Prevalence of anemia among women of reproductive age (15-49 years)`, group = Area, color = Area)) +
+  geom_line() +
+  labs(title = "Evolution of Anemia Prevalence by Country (2013-2019)",
+       x = "Year",
+       y = "Prevalence of Anemia (%)",
+       color = "Country") +
+  scale_x_continuous(breaks = seq(2013, 2019, 1)) +  # Sélectionner les années de 2013 à 2019
+  theme_minimal()
+
+print(graphPIB)
+
+
+```
+
+### Difference between poorest and richest countries
+
+We decided to demonstrate the prevalence of anemia on a graph, since this disease is one of the key diseases in the world, including having a special impact during pregnancy and directly affecting the development of the unborn child.
+
+At the top of the graph we can see the poor countries with the highest rates of anemia, compared to the richest countries further down the graph.
+
+Of particular note is the fact that poor countries have significant data problems, often complete lack of data, as can be seen in our data_countries_PIB table, in which several indicators of food insecurity are almost empty for the poorest countries.
+
