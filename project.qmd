@@ -72,6 +72,7 @@ FAO |> select(-`Year Code`)
 #After that, we use 'pivot wider' to put our indicators in columns to get our cleaned first table
 FAO_widetest<- FAO_test|> pivot_wider(names_from = Item, values_from = Value, id_cols =c('Year', 'Area'))
 ```
+
 ### World Development Indicators
 
 The second data source is The World Bank where we got the world development indicators (https://databank.worldbank.org/source/world-development-indicators#). To get our final table, we select in database "World Development Indicators", for Countries, we selected all countries from Afghanistan to Zimbabwe, in series we select "GDP growth (annual %)", "GDP per capita growth (annual %)", "Agricultural land (% of land area", "Children in employment, female (% of female children ages 7-14)", "Children in employment, female (% of female children ages 7-14)", "Children in employment, male (% of male children ages 7-14)", "Children out of school (% of primary school age)", "Children out of school, female (% of female primary school age)", "Children out of school, male (% of male primary school age)", "Death rate, crude (per 1,000 people)", "Current education expenditure, total (% of total expenditure in public institutions)", "Current health expenditure (% of GDP)", "Food production index (2014-2016 = 100)","Gini index" ,"Labor force participation rate, female (% of female population ages 15+ (modeled ILO estimate)", "Labor force, female (% of total labor force)", "Life expectancy at birth, total (years)", "Lifetime risk of maternal death (%)", "Number of infant deaths".
@@ -201,3 +202,174 @@ data <- round(data, 2)
 
 data$Area <- area_column
 ```
+
+## Data Analysis
+
+### First part
+
+First of all, let's compare GDP and Prevalence of low birthweight:
+
+```{r}
+data_plot <- data
+
+year_least_missing <- which.min(apply(data_plot[, c("GDP growth (annual %)", "Prevalence of low birthweight (percent)")], 2, function(x) sum(is.na(x))))
+year_least_missing <- unique(data_plot$Year[year_least_missing])
+
+data_plot <- na.omit(data_plot[data_plot$Year == year_least_missing, c("Year", "Area", "GDP growth (annual %)", "Prevalence of low birthweight (percent)")])
+
+data_plot$Prevalence_Category <- cut(data_plot$`Prevalence of low birthweight (percent)`,
+                                      breaks = quantile(data_plot$`Prevalence of low birthweight (percent)`, probs = seq(0, 1, 0.2)),
+                                      labels = c("Très faible", "Faible", "Moyenne", "Élevée", "Très élevée"),
+                                      include.lowest = TRUE)
+
+ggplot(data = data_plot, aes(x = `GDP growth (annual %)`, y = `Prevalence of low birthweight (percent)`, color = Prevalence_Category)) +
+  geom_point(size = 3) +
+  labs(x = "GDP growth (annual %)", y = "Prevalence of low birthweight (percent)",
+       title = paste("Relation entre GDP growth et Prevalence of low birthweight pour l'année", year_least_missing),
+       color = "Catégorie de Prévalence") +
+  theme_minimal() +
+  theme(legend.position = "bottom")  # Positionner la légende en ba
+```
+
+```{r}
+
+
+data_plot <- data
+
+year_least_missing <- which.min(apply(data_plot[, c("GDP growth (annual %)", "Prevalence of low birthweight (percent)")], 2, function(x) sum(is.na(x))))
+year_least_missing <- unique(data_plot$Year[year_least_missing])
+
+data_plot <- na.omit(data_plot[data_plot$Year == year_least_missing, c("Year", "Area", "GDP growth (annual %)", "Prevalence of low birthweight (percent)")])
+
+correlation_matrix <- cor(data_plot[, c("GDP growth (annual %)", "Prevalence of low birthweight (percent)")])
+
+summary(data_plot[, c("GDP growth (annual %)", "Prevalence of low birthweight (percent)")])
+
+print(correlation_matrix)
+```
+
+The values we got in the correlation matrix seem to indicate a very weak correlation (close to zero) between "GDP growth (annual %)" and "Prevalence of low birthweight (percent)".
+
+The correlation of 1 on the diagonal represents the perfect correlation between each variable with itself, which is expected.
+
+However, the non-diagonal values (0.09525624) suggest a very weak correlation between the two variables. This low correlation may explain why the scatter plot does not show a clear trend.
+
+```{r}
+data_plot_2020 <- data
+
+data_plot_2020 <- na.omit(data_plot_2020[data_plot_2020$Year == 2020, c("Year", "Area", "GDP growth (annual %)", "Prevalence of low birthweight (percent)")])
+
+data_plot_2020$Prevalence_Category <- cut(data_plot_2020$`Prevalence of low birthweight (percent)`,
+                                          breaks = quantile(data_plot_2020$`Prevalence of low birthweight (percent)`, probs = seq(0, 1, 0.2)),
+                                          labels = c("Très faible", "Faible", "Moyenne", "Élevée", "Très élevée"),
+                                          include.lowest = TRUE)
+
+correlation_matrix_2020 <- cor(data_plot_2020[, c("GDP growth (annual %)", "Prevalence of low birthweight (percent)")])
+
+summary(data_plot_2020[, c("GDP growth (annual %)", "Prevalence of low birthweight (percent)")])
+
+print(correlation_matrix_2020)
+
+ggplot(data = data_plot_2020, aes(x = `GDP growth (annual %)`, y = `Prevalence of low birthweight (percent)`, color = Prevalence_Category)) +
+  geom_point(size = 3) +
+  labs(x = "GDP growth (annual %)", y = "Prevalence of low birthweight (percent)",
+       title = "Relation entre GDP growth et Prevalence of low birthweight pour l'année 2020",
+       color = "Catégorie de Prévalence") +
+  theme_minimal() +
+  theme(legend.position = "bottom")  # Positionner la légende en bas
+
+
+```
+
+The correlation coefficients between "GDP growth (annual %)" and "Prevalence of low birthweight (percent)" for the year 2020 are 0.07955535. This indicates a very weak correlation between these two variables for this specific year.
+
+The close to zero correlation suggests that there is no strong linear relationship between "GDP growth (annual %)" and "Prevalence of low birthweight (percent)" in 2020.
+
+In the analysis of the dataset, two key years were examined to explore the relationship between GDP growth and the prevalence of low birthweight -- 2013 and 2020. The choice of these years was guided by the availability of data, aiming to minimize missing values.
+
+In 2013, the correlation analysis between GDP growth and the prevalence of low birthweight did not reveal a clear trend. The correlation coefficient was close to zero, indicating a weak linear relationship between these two indicators for this year.
+
+Moving to the year 2020, similar findings were observed. The correlation coefficient remained low, suggesting a limited linear association between GDP growth and the prevalence of low birthweight.
+
+These results imply that, at least within the confines of linear correlation, there is no strong apparent connection between GDP growth and the prevalence of low birthweight for the selected years. Further exploration and consideration of additional factors or non-linear relationships may provide a more comprehensive understanding of the dynamics between economic development and health indicators.
+
+Moving to another indicator: "Prevalence of severe food insecurity in the total population (percent) (3-year average)"
+
+```{r}
+#| warning: false
+
+selected_cols1 <- c("Year", "Area", "GDP growth (annual %)", "Prevalence of severe food insecurity in the total population (percent) (3-year average)")
+
+selected_data1 <- data[, selected_cols1]
+
+filtered_data1 <- selected_data1[complete.cases(selected_data1[, "Prevalence of severe food insecurity in the total population (percent) (3-year average)"]), ]
+
+year_with_least_na <- which.min(table(filtered_data1$Year))
+
+data_for_plot1 <- filtered_data1[filtered_data1$Year == unique(filtered_data1$Year)[year_with_least_na], ]
+
+ggplot(data = data_for_plot1, aes(x = `GDP growth (annual %)`, y = `Prevalence of severe food insecurity in the total population (percent) (3-year average)`)) +
+  geom_point(size = 3, color = "blue") +
+  labs(x = "GDP growth (annual %)", y = "Prevalence of severe food insecurity (percent) (3-year average)",
+       title = paste("Relation entre GDP growth et Prevalence of severe food insecurity (", unique(data_for_plot1$Year), ")")) +
+  theme_minimal()
+
+
+```
+
+```{r}
+selected_cols2 <- c("GDP growth (annual %)", "Prevalence of severe food insecurity in the total population (percent) (3-year average)")
+
+selected_data2 <- data[, selected_cols2]
+
+selected_data2 <- na.omit(selected_data2)
+
+correlation_table2 <- cor(selected_data2)
+
+print(correlation_table2)
+
+```
+
+The results of the correlation between "GDP growth (annual %)" and "Prevalence of severe food insecurity in the total population (percent) (3-year average)" for the available data are close to zero, indicating a very weak correlation. The correlation is practically zero (-0.0016), suggesting that there is no obvious linear relationship between these two variables.
+
+This means that, at least based on the linear correlation, there is no clear trend indicating that the GDP growth rate is associated with the prevalence of severe food insecurity in the population.
+
+```{r}
+filtered_data_non_na <- filtered_data1[complete.cases(filtered_data1[, c("GDP growth (annual %)", "Prevalence of severe food insecurity in the total population (percent) (3-year average)")]), ]
+
+second_year_with_least_na <- which.min(table(filtered_data_non_na$Year)[-year_with_least_na])
+
+second_data_for_plot <- filtered_data_non_na[filtered_data_non_na$Year == unique(filtered_data_non_na$Year)[second_year_with_least_na], ]
+
+correlation_second_year <- cor(second_data_for_plot[, c("GDP growth (annual %)", "Prevalence of severe food insecurity in the total population (percent) (3-year average)")])
+
+print(correlation_second_year)
+
+
+```
+
+This correlation is weak and negative, indicating a weak linear relationship between these two variables for this specific year. This means that there is little evidence of a linear relationship between the GDP growth rate and the prevalence of severe food insecurity in the population for that particular year.
+
+As always, it is important to note that correlation only captures linear relationships and does not guarantee causation.
+
+```{r}
+ggplot(data = second_data_for_plot, aes(x = `GDP growth (annual %)`, y = `Prevalence of severe food insecurity in the total population (percent) (3-year average)`)) +
+  geom_point(size = 3, color = "blue") +
+  labs(x = "GDP growth (annual %)", y = "Prevalence of severe food insecurity (percent) (3-year average)",
+       title = paste("Relation entre GDP growth et Prevalence of severe food insecurity (", unique(second_data_for_plot$Year), ")")) +
+  theme_minimal()
+
+```
+
+### Conclusion of the first part:
+
+In our analysis, we examined the correlation between GDP growth and two key indicators of food insecurity -- the prevalence of severe food insecurity and the prevalence of low birthweight. The results consistently showed weak correlations between GDP growth and both indicators for the selected years, suggesting a limited linear relationship between economic development and these dimensions of food insecurity.
+
+The correlation coefficients were close to zero, indicating that changes in GDP growth are not strongly associated with variations in the prevalence of severe food insecurity or low birthweight. This observation challenges the assumption that economic growth alone is sufficient to alleviate these aspects of food insecurity.
+
+These findings prompt further investigation into alternative development indicators that may offer a more comprehensive understanding of the relationship between food insecurity and a nation's overall development. It is plausible that other factors, such as educational attainment, healthcare infrastructure, or social policies, could play crucial roles.
+
+As we move forward, considering additional indicators and employing a more nuanced approach may help unveil hidden patterns and provide a clearer picture of the intricate interplay between development and food security. Moreover, assessing the disparities among countries, particularly focusing on the socio-economic conditions of the least developed nations, could offer valuable insights into addressing food insecurity on a global scale.
+
+This ongoing exploration is vital not only for understanding the multifaceted nature of the issue but also for formulating effective policies and interventions that address the root causes of food insecurity, contributing to a more equitable and sustainable world.
+
