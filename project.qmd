@@ -557,3 +557,26 @@ model_selected <- lm(formula_selected, data = data)
 summary(model_selected)
 
 ```
+
+### Model extension
+
+
+To push the analysis, we chose the indicators which seem significant: GDP growth (annual %), Agricultural land (% of land area), Current education expenditure, total (% of total expenditure in public institutions) and Life expectancy at birth, total (years)".
+
+The multiple linear regression results show that the model explains a significant proportion of the variance in the prevalence of undernutrition. The results which we got are as following:
+
+GDP growth (annual %): The coefficient is positive (0.08544), suggesting that higher economic growth is associated with an increase in the prevalence of undernourishment, although this coefficient is not statistically significant.
+
+Agricultural land (% of land area): The coefficient is positive (0.04704) and statistically significant. This suggests that a greater proportion of agricultural land relative to the total area is associated with an increase in the prevalence of undernourishment.
+
+Current education expenditure (% of total expenditure in public institutions): The coefficient is negative (-0.14612), indicating that greater public expenditure on education as a percentage of total expenditure is associated with a decrease in the prevalence of undernourishment. This coefficient is statistically significant.
+
+Life expectancy at birth, total (years): The coefficient is negative (-0.53608), suggesting that greater life expectancy at birth is associated with a decrease in the prevalence of undernutrition. This coefficient is highly significant.
+
+Overall significance of the model: The p-value associated with the F-statistic is very low (\< 2.2e-16), which indicates that the model as a whole is statistically significant in predicting the prevalence of undernutrition.
+
+Model quality: The coefficient of multiple determination (R-squared) is 0.3589, which suggests that the model explains approximately 35.9% of the observed variability in the prevalence of undernourishment.
+
+In summary, the results indicate statistically significant relationships between the prevalence of undernourishment and certain economic and social indicators.
+
+So, we can say that these 4 indicators are very important in terms of increasing the prevalence of undernourishment and government and researches should pay attention to them in order to create healthy and wealthy society in the future.
