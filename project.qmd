@@ -580,3 +580,17 @@ Model quality: The coefficient of multiple determination (R-squared) is 0.3589, 
 In summary, the results indicate statistically significant relationships between the prevalence of undernourishment and certain economic and social indicators.
 
 So, we can say that these 4 indicators are very important in terms of increasing the prevalence of undernourishment and government and researches should pay attention to them in order to create healthy and wealthy society in the future.
+
+## Global conclusion of the work :
+
+Throughout the project, an exploration of various indicators of development, including economic, health, and educational factors, has been undertaken. Key relationships were analyzed, such as the correlation between GDP and prevalence of anemia, as well as regression models examining the impact of female labor force participation and education expenditure on undernourishment. The findings highlighted nuanced connections between these variables, emphasizing the multifaceted nature of development. Notably, the analysis suggested that economic prosperity alone does not guarantee positive health outcomes, emphasizing the importance of addressing socio-economic factors comprehensively.
+
+As a potential avenue for future exploration, a deeper dive into the intricate interplay between women's roles in society, education, and food security could provide valuable insights. This project underscores the complexity of development dynamics and encourages further research to inform holistic and targeted interventions for global well-being.
+
+## Annexe
+
+For our research project we used the data about Suite of Food Security Indicators from Food and Agriculture Organisation of the United Nations (https://www.fao.org/faostat/en/#data/FS) and the world development indicators from The World Bank (https://databank.worldbank.org/source/world-development-indicators#).
+
+Our database started from 2013 and ended in 2022.
+
+The GitHub link for our code: https://github.com/seminavictoria/project/blob/main/project.qmd
