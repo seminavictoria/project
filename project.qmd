@@ -498,3 +498,62 @@ At the top of the graph we can see the poor countries with the highest rates of 
 
 Of particular note is the fact that poor countries have significant data problems, often complete lack of data, as can be seen in our data_countries_PIB table, in which several indicators of food insecurity are almost empty for the poorest countries.
 
+## Regression analysis
+
+Of course, indicators demonstrating the level of food are important, but as our previous analysis showed, we still have a need to add other socio-economic indicators.
+
+Therefore, we added to the regression "Female labor force participation rate (% of female population aged 15 years and over) (modeled ILO estimate)", "Current education expenditure, total (% of total expenditure in public institutions"), and See also "Children out of school (% of primary school age)".
+
+We took the following indicators because we believe that they can directly influence the standard of living, and therefore the nutrition of the population.
+
+In particular, if children do not attend school from an early age, this indicates that they begin to work from an early age. As a rule, this is low-skilled and low-paid work without further possibility of any career growth and retraining in other specialties.
+
+```{r}
+complete_data <- data[complete.cases(data$`Prevalence of undernourishment (percent) (3-year average)`, data$`Labor force participation rate, female (% of female population ages 15+) (modeled ILO estimate)`), ]
+
+cor(complete_data$`Prevalence of undernourishment (percent) (3-year average)`, complete_data$`Labor force participation rate, female (% of female population ages 15+) (modeled ILO estimate)`)
+
+```
+
+```{r}
+
+formula <- formula(`Prevalence of undernourishment (percent) (3-year average)` ~ 
+                    `Labor force participation rate, female (% of female population ages 15+) (modeled ILO estimate)` + 
+                    `Current education expenditure, total (% of total expenditure in public institutions)` + 
+                    `Children out of school (% of primary school age)`)
+                    
+model <- lm(formula, data = data)
+
+summary(model)
+
+
+```
+
+So, we made regression analysis and we have tre following results now.
+
+The intercept is 14.32. This is the estimated value of the prevalence of undernourishment when all explanatory variables are equal to zero.
+
+Labor force participation rate, female (%) (modeled ILO estimate): The coefficient is 0.04301 with a p-value of 0.4009. This indicates that for a one unit increase in the female labor force participation rate, the prevalence of undernourishment increases by 0.04301, but this increase is not statistically significant.
+
+Current education expenditure, total (% of total expenditure in public institutions): The coefficient is -0.09698 with a p-value of 0.1546. This suggests that a one-unit increase in current education spending, as a percentage of total spending in public institutions, is associated with a 0.09698 decrease in the prevalence of undernourishment, but this decrease is not not statistically significant.
+
+Children out of school (% of primary school age): The coefficient is 0.07915 with a p-value of 0.1093. This means that a one unit increase in the percentage of children out of school among those of school age is associated with an increase of 0.07915 in the prevalence of undernourishment, but this increase is not statistically significant.
+
+R-squared: The coefficient of determination (R²) is 0.03776, which suggests that the model explains only about 3.78% of the variance in the prevalence of undernourishment.
+
+We can say again that the results do not show significant relationships between the explanatory variables and the prevalence of undernourishment. High p-values indicate that the coefficients are not statistically different from zero.
+
+So, it is possible that other variables not included in the model could have a more significant influence on the prevalence of undernutrition, that's why we decided to create a formula with all the World Bank indicators.
+
+```{r}
+selected_indicators <- c("GDP growth (annual %)", "Agricultural land (% of land area)", "Current education expenditure, total (% of total expenditure in public institutions)", "Life expectancy at birth, total (years)")
+
+selected_indicators <- paste("`", selected_indicators, "`", sep = "")
+
+formula_selected <- as.formula(paste("`Prevalence of undernourishment (percent) (3-year average)` ~", paste(selected_indicators, collapse = " + ")))
+
+model_selected <- lm(formula_selected, data = data)
+
+summary(model_selected)
+
+```
