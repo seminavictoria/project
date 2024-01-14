@@ -373,3 +373,82 @@ As we move forward, considering additional indicators and employing a more nuanc
 
 This ongoing exploration is vital not only for understanding the multifaceted nature of the issue but also for formulating effective policies and interventions that address the root causes of food insecurity, contributing to a more equitable and sustainable world.
 
+### Second part
+
+We further decided to conduct the analysis using the variables Food Production Index and Prevalence of Malnutrition because we believe that these are important for assessing the efficiency of the agricultural system and its impact on the food security of the society.
+
+We believe that analysis of the Food Production Index and the Prevalence of Malnutrition is important for an overall assessment of the sustainability of a country's food system. If the index shows a high level of food production, but the prevalence of undernourishment is still high, this may indicate problems in food distribution, access to food, or other factors preventing the population from effectively feeding.
+
+Globally, for researchers, comparing food production data with malnutrition rates can reveal problems in the supply chain, such as product wastage, poor storage and transportation efficiency, and problems in trade and distribution. Among other things, for international organizations this analysis may be especially important, as we think, since it helps to identify those areas of activity that require improvement. For example, if agricultural output is high but the prevalence of malnutrition is also high, measures may be needed to improve population access to food, nutrition education, and nutrition.
+
+In terms of our project Food Production Index and Prevalence of Malnutrition helps understand the relationship between food production and food availability.
+
+```{r}
+
+selected_year <- 2013
+selected_vars <- c("Area", "Food production index (2014-2016 = 100)", "Prevalence of undernourishment (percent) (3-year average)")
+scatter_data <- data[data$Year == selected_year, selected_vars]
+
+scatter_data <- na.omit(scatter_data)
+
+
+
+ggplot(scatter_data, aes(x = `Food production index (2014-2016 = 100)`, y = `Prevalence of undernourishment (percent) (3-year average)`)) +
+  geom_point(color = "orange") +
+  labs(title = paste("Scatter Plot of Food Production Index vs. Prevalence of Undernourishment (2013)"),
+       x = "Food Production Index (2014-2016 = 100)",
+       y = "Prevalence of Undernourishment (percent)") +
+  theme_minimal()
+
+
+
+```
+
+```{r}
+
+selected_year <- 2013
+selected_vars3 <- c("Food production index (2014-2016 = 100)", "Prevalence of undernourishment (percent) (3-year average)")
+correlation_data3 <- data[data$Year == selected_year, selected_vars3]
+
+correlation_data3 <- na.omit(correlation_data3)
+
+correlation_coefficient3 <- cor(correlation_data3$`Food production index (2014-2016 = 100)`, correlation_data3$`Prevalence of undernourishment (percent) (3-year average)`)
+
+cat("Correlation Coefficient:", correlation_coefficient3, "\n")
+
+```
+
+A correlation coefficient of 0.237 indicates a positive correlation between "Food production index" and "Prevalence of undernourishment" for the year 2013. While the correlation is positive, it's not very strong.
+
+Now let's have a look at the same variables but in 2018.
+
+```{r}
+
+year_2018 <- 2018
+vars_2018 <- c("Food production index (2014-2016 = 100)", "Prevalence of undernourishment (percent) (3-year average)")
+correlation_data_2018 <- data[data$Year == year_2018, vars_2018]
+
+correlation_data_2018 <- na.omit(correlation_data_2018)
+
+correlation_coefficient_2018 <- cor(correlation_data_2018$`Food production index (2014-2016 = 100)`, correlation_data_2018$`Prevalence of undernourishment (percent) (3-year average)`)
+
+cat("Correlation Coefficient for 2018:", correlation_coefficient_2018, "\n")
+
+```
+
+The examination of the correlation between Food Production Index and the Prevalence of Undernourishment for these years reveals a notable pattern --- the correlation coefficients for both 2013 (0.237) and 2018 (-0.155) are close to zero. This near-zero correlation suggests a weak and possibly non-existent linear relationship between these two indicators.
+
+The proximity to zero in correlation coefficients implies that variations in food production do not consistently or strongly predict changes in the prevalence of undernourishment across countries.
+
+So, we can say that the weak correlation underscores the complexity of factors influencing food security, indicating that food production alone may not be a decisive factor in determining the prevalence of undernourishment.
+
+### Conclusion of the second part:
+
+In general, the fact that the connection turned out to be insignificant is quite intuitive.
+
+Firstly, in the era of globalization, the production of products in one country does not mean at all that they will be used for consumption in that same country.
+
+Poor countries often produce goods for export and starve themselves, while northern countries rich in natural resources and human capital do not have a climate suitable for agriculture, but can nevertheless easily buy these products for consumption by their citizens.
+
+In addition, the Food Production Index is a fairly complex variable and often includes specific food products, but does not, for example, include the production of fresh water or other essential nutrients.
+
