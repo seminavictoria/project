@@ -72,3 +72,132 @@ FAO |> select(-`Year Code`)
 #After that, we use 'pivot wider' to put our indicators in columns to get our cleaned first table
 FAO_widetest<- FAO_test|> pivot_wider(names_from = Item, values_from = Value, id_cols =c('Year', 'Area'))
 ```
+### World Development Indicators
+
+The second data source is The World Bank where we got the world development indicators (https://databank.worldbank.org/source/world-development-indicators#). To get our final table, we select in database "World Development Indicators", for Countries, we selected all countries from Afghanistan to Zimbabwe, in series we select "GDP growth (annual %)", "GDP per capita growth (annual %)", "Agricultural land (% of land area", "Children in employment, female (% of female children ages 7-14)", "Children in employment, female (% of female children ages 7-14)", "Children in employment, male (% of male children ages 7-14)", "Children out of school (% of primary school age)", "Children out of school, female (% of female primary school age)", "Children out of school, male (% of male primary school age)", "Death rate, crude (per 1,000 people)", "Current education expenditure, total (% of total expenditure in public institutions)", "Current health expenditure (% of GDP)", "Food production index (2014-2016 = 100)","Gini index" ,"Labor force participation rate, female (% of female population ages 15+ (modeled ILO estimate)", "Labor force, female (% of total labor force)", "Life expectancy at birth, total (years)", "Lifetime risk of maternal death (%)", "Number of infant deaths".
+
+World Development Indicators (WDI) is the primary World Bank collection of development indicators, compiled from officially recognized international sources. It presents the most current and accurate global development data available, and includes national, regional and global estimates. Even though Global Development Finance (GDF) is no longer listed in the WDI database name, all external debt and financial flows data continue to be included in WDI. The GDF publication has been renamed International Debt Statistics (IDS), and has its own separate database, as well. The World Bank is known for maintaining high standards in databases. There is data reliability, World Bank data is generally subject to rigorous standards and quality controls. As part of our project, the database from World Bank enable to make international comparisons by collecting data from many countries.
+
+The chosen indicators seem quite obvious; those in the first table mainly concern the percentages of people suffering from diseases, such as anemia, obesity, low birth weight, for the second table the indicators are as common as the first; these are the basic development indicators (GDP and GDP/inhabitant, etc.) as well as indicators on education, in particular the education of women, then indicators on resources and agriculture going to indicators of inequalities like the Gini index.
+
+```{r}
+#| message: false
+
+WB<- vroom("WB.csv")
+```
+
+```{r}
+# Now we are looking at the table from the World Bank. The initial problem there was the fact that years were written in columns instead of lines. That's why we decided to use 'pivot longer' to put years in lines (to combine after with the first table)
+WB_longtest<-WB|>pivot_longer(!(`Country Name` | `Country Code` |`Series Name` |`Series Code`))
+```
+
+```{r}
+#Here we need to name the new column with years as 'Year'
+WB_longtest <- WB_longtest |> rename("Year"="name")
+```
+
+```{r}
+# In the World Bank database some missing values were automatically replaced by ".." In order not to get any problems with working with tables we replace such missed values with NA
+WB_longtest[WB_longtest==".."]<- NA
+```
+
+```{r}
+# After cleaning this, we faced with the another problem with  year columns where years were written as 2014[YR2014]. However, we need to have only the year insteasm so we deleted these brackets for every year 
+WB_longtest$Year <- gsub("\\[.*\\]", "", WB_longtest$Year)
+```
+
+```{r}
+#After that, we use 'pivot wider' to put our indicators in columns to get our cleaned second table
+WB_wide <- WB_longtest |>
+  pivot_wider(
+    names_from = `Series Name`,
+    values_from = value,
+    id_cols = c('Year', 'Country Name'),
+    values_fn = list
+  )
+
+```
+
+```{r}
+#| message: false
+
+#Summary of the first table
+num_rows <- nrow(FAO_widetest)
+num_cols <- ncol(FAO_widetest)
+
+missing_values <- colSums(is.na(FAO_widetest))
+
+summary_table <- data.frame(
+  Number_of_rows = num_rows,
+  Number_of_columns = num_cols,
+  Number_of_missing_values = missing_values
+)
+
+
+knitr::kable(summary_table)
+```
+
+```{r}
+#Summary of the second table
+
+num_rows_wide <- nrow(WB_wide)
+num_cols_wide <- ncol(WB_wide)
+
+
+missing_values_wide <- colSums(is.na(WB_wide))
+
+
+summary_table_wide <- data.frame(
+  Number_of_rows = num_rows_wide,
+ Number_of_columns = num_cols_wide,
+  Number_of_missing_values = missing_values_wide
+)
+
+
+knitr::kable(summary_table_wide)
+
+```
+
+```{r}
+WB_wide <- WB_wide |> 
+  rename("Area" = `Country Name` )
+```
+
+```{r}
+WB_wide <- slice(WB_wide, 1:2170)
+
+```
+
+```{r}
+data <- merge(WB_wide, FAO_widetest, by = c("Year", "Area"))
+```
+
+```{r}
+WB_wide$Year <- trimws(WB_wide$Year)
+WB_wide$Area <- trimws(WB_wide$Area)
+
+FAO_widetest$Year <- trimws(FAO_widetest$Year)
+FAO_widetest$Area <- trimws(FAO_widetest$Area)
+
+```
+
+```{r}
+data <- merge(WB_wide, FAO_widetest, by = c("Year", "Area"), all.x = TRUE, all.y = TRUE)
+
+```
+
+```{r}
+#| warning: false
+
+
+area_column <- data$Area
+
+non_numeric_columns <- sapply(data, function(x) !is.numeric(x))
+
+
+data[, non_numeric_columns] <- lapply(data[, non_numeric_columns], function(x) as.numeric(as.character(x)))
+
+data <- round(data, 2)
+
+data$Area <- area_column
+```
