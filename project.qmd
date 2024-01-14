@@ -35,3 +35,40 @@ As part of the analysis, we expect that a certain relationship will be found bet
 In addition, we are going to analyze the relationship between education and food security. We expect that higher levels of education will generally be associated with higher levels of healthy eating awareness and resource management skills, which will help improve food security.
 
 We also want to analyze developed and developing countries because we expect different results in these groups. It seems to us that in developed countries the main problems will be related to the social aspects of food security, such as inequality in access to resources. In particular, anorexia and obesity may be problems of overconsumption and pressure from social standards of beauty, while in developing countries, conversely, low levels of education and limited investment may lead to malnutrition and lack of access to key food resources. Overall, through the analysis of the relationships between food security and various development indicators, we want to identify the main dynamics that shape the level of food security in different countries.
+
+## Data Set Description
+
+### Food Security Indicators:
+
+The first data source which we used is FAO (Food and Agriculture Organisation of the United Nations): https://www.fao.org/faostat/en/#data/FS with the data selected from "Suite of Food Security Indicators" (steps to get the final table are: select in countries: "select all", in elements select "values", in items select "prevalence of undernourishment (percent)", "Prevalence of severe food insecurity in the total population (percent)", "Percentage of children under 5 years affected by wasting (percent)", "Percentage of children under 5 years of age who are stunted (modelled estimates) (percent)", "Percentage of children under 5 years of age who are overweight (modelled estimates) (percent)", "Prevalence of obesity in the adult population (18 years and older)", "Prevalence of anemia among women of reproductive age (15-49 years)", "Prevalence of low birthweight (percent)", "Prevalence of exclusive breastfeeding among infants 0-5 months of age", for the selected years , we choose to work from 2013 to 2022.
+
+We decided to choose these indicators because, apart from basic nutrition, food security is linked to economic stability, long-term health, women's empowerment and the environment. Research reveals that food insecurity can result in ongoing short and long-term health problems. The first two years of a child's life are of critical importance for their healthy growth and development. For children, severe food insecurity has been linked to chronic health conditions like stunting, wasting and anemia. A diet lacking enough calories, protein, vitamins and minerals will impede a child's growth and development from before they're born up until adolescence. A pregnant mother's malnutration can lead to low birthweight, infant mortality, preterm delivery and slow cognitive development for her baby.
+
+All in all, this suite of food security indicators is composed of a revised selection of indicators based on the SDGs monitoring requirement and data availability. For example, some of the utilization indicators are replaced with official SDGs indicators. Data in this domain are featured in the State of Food Security and Nutrition in the World 2022 report.
+
+```{r}
+#| message: false
+
+FAO <- vroom("FAO.csv")
+```
+
+```{r}
+#First of all, we had a problem with the FAO database because some years in column 'Year' were written as an interval, e.g. 2014 was written as 2013-2015. This problem actually comes from the original FAO website's database description, where years are written as following 2022/2021-2023. So first of all we figured out this issue.
+
+
+FAO$Year <- ifelse(grepl("\\d{4}-(\\d{4})", FAO$Year), sub("(\\d{4})-(\\d{4})", "\\1", FAO$Year) %>% as.numeric() + 1, FAO$Year)
+
+```
+
+```{r}
+# Then we had a need to delete the 'Year code column' since we already have a column year
+FAO_test<-
+FAO |> select(-`Year Code`)
+
+
+```
+
+```{r}
+#After that, we use 'pivot wider' to put our indicators in columns to get our cleaned first table
+FAO_widetest<- FAO_test|> pivot_wider(names_from = Item, values_from = Value, id_cols =c('Year', 'Area'))
+```
